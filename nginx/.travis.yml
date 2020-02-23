@@ -1,0 +1,19 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t loschmie/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true loschmie/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t loschmie/multi-client-v2 ./client
+  - docker build -t loschmie/multi-nginx-v2 ./nginx
+  - docker build -t loschmie/multi-server-v2 ./server
+  - docker build -t loschmie/multi-worker-v2 ./worker
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  - docker push loschmie/multi-*v2
