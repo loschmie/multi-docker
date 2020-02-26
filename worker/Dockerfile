@@ -1,7 +1,6 @@
 FROM node:alpine
-WORKDIR /app
-COPY package.json .
-RUN npm install && npm audit fix --force
-RUN npm fund
+WORKDIR "/app"
+COPY ./package.json ./
+RUN npm install
 COPY . .
-CMD [ "npm", "run", "start" ]
+CMD ["npm", "run", "start"]
